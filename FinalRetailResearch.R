@@ -56,7 +56,7 @@ m2 <- lm(AnnualVIX ~ RetailHoldings + InstitutionalHoldings, data = MainData)
 p2 <- ggplot(MainData, aes(x = RetailHoldings, y = AnnualVIX)) +
   geom_point(color = "darkblue", size = 3) +
   geom_smooth(method = "lm", se = FALSE, color = "red") +
-  labs(title = "Eq 2: Annual VIX vs. Retail Holdings", x = "Retail Holdings ($M)", y = "Annual VIX") +
+  labs(title = "Eq 2: Annual VIX vs. Retail Holdings", x = "Retail Holdings ($B)", y = "Annual VIX") +
   theme_minimal()
 
 # --- MODEL 3: Annual VIX vs Robinhood Accounts ---
@@ -80,7 +80,7 @@ m5 <- lm(AnnualWilshireSD ~ RetailHoldings + InstitutionalHoldings, data = MainD
 p5 <- ggplot(MainData, aes(x = RetailHoldings, y = AnnualWilshireSD)) +
   geom_point(color = "purple", size = 3) +
   geom_smooth(method = "lm", se = FALSE, color = "red") +
-  labs(title = "Eq 5: Wilshire SD vs. Retail Holdings", x = "Retail Holdings ($M)", y = "Wilshire SD (Points)") +
+  labs(title = "Eq 5: Wilshire SD vs. Retail Holdings", x = "Retail Holdings ($B)", y = "Wilshire SD (Points)") +
   theme_minimal()
 
 # --- MODEL 6: Annual WilshireSD vs Robinhood Accounts ---
@@ -150,3 +150,13 @@ print(p7)
 print(p8)
 print(p9)
 print(p10)
+
+# =============================================================================
+# PART 4: MUTLICOLINEARITY CHECK
+# =============================================================================
+
+# Check correlation between Retail and Institutional Holdings
+holdings_corr <- cor(MainData$RetailHoldings, MainData$InstitutionalHoldings, use = "complete.obs")
+
+cat("\n--- Multicollinearity Check ---\n")
+cat("Correlation between Retail & Inst. Holdings:", round(holdings_corr, 4), "\n")
