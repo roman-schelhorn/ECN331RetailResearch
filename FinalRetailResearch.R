@@ -160,3 +160,66 @@ holdings_corr <- cor(MainData$RetailHoldings, MainData$InstitutionalHoldings, us
 
 cat("\n--- Multicollinearity Check ---\n")
 cat("Correlation between Retail & Inst. Holdings:", round(holdings_corr, 4), "\n")
+
+# =============================================================================
+# PART 5: PREPARE MATERIALS FOR USE IN PAPERS/PRESENTATIONS
+# =============================================================================
+
+install.packages("stargazer")
+library(stargazer)
+
+# ---------------------------------------------------------
+# A. EXPORT REGRESSION TABLES
+# ---------------------------------------------------------
+# This creates a Word file named "Reg_Results_Annual.doc"
+# It groups your Annual Models (1-6) into two distinct tables in one file
+# or you can separate them. Here, I have separated them by Dependent Variable.
+
+# Table 1: Annual VIX Models (m1, m2, m3)
+stargazer(m1, m2, m3,
+          type = "html", # Renders correctly when opened in Word
+          out = "Table1_AnnualVIX.doc",
+          title = "Regression Results: Annual VIX",
+          dep.var.labels = c("Annual VIX"),
+          covariate.labels = c("Retail Share (%)", 
+                               "Retail Holdings", 
+                               "Inst. Holdings", 
+                               "Robinhood Accts"),
+          digits = 3)
+
+# Table 2: Annual Wilshire SD Models (m4, m5, m6)
+stargazer(m4, m5, m6,
+          type = "html",
+          out = "Table2_WilshireSD.doc",
+          title = "Regression Results: Wilshire Standard Deviation",
+          dep.var.labels = c("Wilshire SD"),
+          covariate.labels = c("Retail Share (%)", 
+                               "Retail Holdings", 
+                               "Inst. Holdings", 
+                               "Robinhood Accts"),
+          digits = 3)
+
+# Table 3: Robinhood Specific Models (m7, m8, m9, m10)
+# Note: Since these use different datasets (Monthly/Quarterly), N will vary significantly.
+stargazer(m7, m8, m9, m10,
+          type = "html",
+          out = "Table3_Robinhood_HighFreq.doc",
+          title = "Regression Results: Robinhood Activity (Monthly/Quarterly)",
+          dep.var.labels = c("Q-VIX", "M-VIX", "Q-Wilshire SD", "M-Wilshire SD"),
+          covariate.labels = c("Robinhood MAU", "Robinhood Accts"),
+          digits = 3)
+
+# ---------------------------------------------------------
+# B. EXPORT PLOTS (High Res for Paper)
+# ---------------------------------------------------------
+# This saves your ggplot objects (p1, p2, etc.) as PNG files to your folder.
+
+# Create a list of your plots
+plot_list <- list(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10)
+
+# Loop through and save them (width/height in inches)
+for (i in 1:length(plot_list)) {
+  file_name <- paste0("Figure_", i, ".png")
+  ggsave(filename = file_name, plot = plot_list[[i]], 
+         width = 6.5, height = 4.5, dpi = 300)
+}
